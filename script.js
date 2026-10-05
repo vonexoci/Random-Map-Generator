@@ -675,4 +675,3 @@ downloadBtn.addEventListener(
 // ===============================
 
 updateTheme();
-        
