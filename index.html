@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Random Map Generator</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=1.0.1">
 </head>
 <body>
     <div class="container">
@@ -14,7 +14,7 @@
         <div class="controls-card">
             <div class="control-group">
                 <label for="mapSize">Map Size</label>
-                <select id="mapSize">
+                <select id="mapSize" class="input-field">
                     <option value="10">10 × 10</option>
                     <option value="15" selected>15 × 15</option>
                     <option value="20">20 × 20</option>
@@ -24,7 +24,7 @@
 
             <div class="control-group">
                 <label for="themeSelect">Theme</label>
-                <select id="themeSelect">
+                <select id="themeSelect" class="input-field">
                     <option value="classic">Classic</option>
                     <option value="forest">Forest</option>
                     <option value="ocean">Ocean</option>
@@ -35,7 +35,7 @@
 
             <div class="control-group">
                 <label for="exportQuality">Export Quality</label>
-                <select id="exportQuality">
+                <select id="exportQuality" class="input-field">
                     <option value="1">1x (Standard)</option>
                     <option value="2" selected>2x (HD)</option>
                     <option value="3">3x (Full HD)</option>
@@ -46,7 +46,7 @@
             <div class="control-group">
                 <label for="seedInput">Seed</label>
                 <div class="seed-container">
-                    <input type="text" id="seedInput" placeholder="Enter seed...">
+                    <input type="text" id="seedInput" class="input-field" placeholder="Enter seed...">
                     <button id="copySeedBtn" class="btn btn-secondary">Copy</button>
                 </div>
             </div>
@@ -68,4 +68,5 @@
 
     <script src="script.js"></script>
 </body>
-</html>
+                    </html>
+                    
