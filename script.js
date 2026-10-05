@@ -3,7 +3,11 @@ const ctx = canvas.getContext("2d");
 
 const mapSizeSelect = document.getElementById("mapSize");
 const themeSelect = document.getElementById("themeSelect");
+const exportQualitySelect = document.getElementById("exportQuality");
 const generateBtn = document.getElementById("generateBtn");
+const seedInput = document.getElementById("seedInput");
+const copySeedBtn = document.getElementById("copySeedBtn");
+const downloadBtn = document.getElementById("downloadBtn");
 
 
 // ===============================
@@ -230,22 +234,31 @@ function setPixel(data, index, color) {
 
 
 // ===============================
-// CREATE MAP
+// CREATE MAP (ALWAYS MASTER 4K RESOLUTION)
 // ===============================
 
-function generateMap() {
+function generateMap(forceNewSeed = false) {
 
     const size = Number(mapSizeSelect.value);
     const themeName = themeSelect.value;
     const theme = themes[themeName];
 
-    const seed = randomSeed();
+    let seed;
+    if (forceNewSeed || !seedInput.value) {
+        seed = randomSeed();
+        seedInput.value = seed;
+    } else {
+        seed = Number(seedInput.value);
+    }
 
-    // Canvas resolution
-    const resolution = Math.min(
+    // Default base resolution generated at maximum 4K scale (~2100px - 2800px)
+    const MAX_QUALITY_MULTIPLIER = 4;
+    const baseResolution = Math.min(
         700,
         Math.max(420, size * 25)
     );
+
+    const resolution = baseResolution * MAX_QUALITY_MULTIPLIER;
 
     canvas.width = resolution;
     canvas.height = resolution;
@@ -257,7 +270,6 @@ function generateMap() {
 
     const data = image.data;
 
-    // Noise maps
     const noises = {
 
         large: createNoise(
@@ -290,10 +302,6 @@ function generateMap() {
     };
 
 
-    // ===============================
-    // DRAW TERRAIN PIXEL BY PIXEL
-    // ===============================
-
     for (let y = 0; y < resolution; y++) {
 
         for (let x = 0; x < resolution; x++) {
@@ -301,14 +309,12 @@ function generateMap() {
             const nx = x / resolution;
             const ny = y / resolution;
 
-            // Distance from center
             const dx = nx - 0.5;
             const dy = ny - 0.5;
 
             const distance =
                 Math.sqrt(dx * dx + dy * dy);
 
-            // Main terrain noise
             let elevation = getTerrainNoise(
                 noises,
                 nx,
@@ -316,7 +322,6 @@ function generateMap() {
                 1
             );
 
-            // Create continent-like land shapes
             let continentShape =
                 1 - distance * 1.25;
 
@@ -328,7 +333,6 @@ function generateMap() {
                 continentShape * 0.28;
 
 
-            // Moisture
             const moisture = sampleNoise(
                 noises.moisture,
                 nx * (noises.moisture[0].length - 1),
@@ -336,17 +340,12 @@ function generateMap() {
             );
 
 
-            // Slight terrain variation
             elevation +=
                 (moisture - 0.5) * 0.04;
 
 
             let color;
 
-
-            // ===============================
-            // WATER
-            // ===============================
 
             if (elevation < theme.waterLevel - 0.12) {
 
@@ -360,10 +359,6 @@ function generateMap() {
 
             }
 
-            // ===============================
-            // BEACH
-            // ===============================
-
             else if (
                 elevation <
                 theme.waterLevel + 0.035
@@ -372,10 +367,6 @@ function generateMap() {
                 color = theme.colors.beach;
 
             }
-
-            // ===============================
-            // MOUNTAINS
-            // ===============================
 
             else if (
                 elevation >
@@ -395,10 +386,6 @@ function generateMap() {
 
             }
 
-            // ===============================
-            // FOREST
-            // ===============================
-
             else if (
                 moisture > theme.forest
             ) {
@@ -407,22 +394,20 @@ function generateMap() {
 
             }
 
-            // ===============================
-            // NORMAL LAND
-            // ===============================
-
             else {
 
                 color = theme.colors.grass;
             }
 
 
-            // Add subtle terrain texture
+            const unscaledX = Math.floor(x / MAX_QUALITY_MULTIPLIER);
+            const unscaledY = Math.floor(y / MAX_QUALITY_MULTIPLIER);
+
             const texture =
                 (seededRandom(
                     seed +
-                    x * 17 +
-                    y * 31
+                    unscaledX * 17 +
+                    unscaledY * 31
                 ) - 0.5) * 8;
 
 
@@ -452,12 +437,12 @@ function generateMap() {
     );
 
 
-    // Add rivers
     drawRivers(
         resolution,
         noises,
         theme,
-        seed
+        seed,
+        MAX_QUALITY_MULTIPLIER
     );
 }
 
@@ -470,7 +455,8 @@ function drawRivers(
     resolution,
     noises,
     theme,
-    seed
+    seed,
+    scaleMultiplier = 1
 ) {
 
     const numberOfRivers =
@@ -519,8 +505,8 @@ function drawRivers(
                 ) * Math.PI * 2;
 
 
-            x += Math.cos(angle) * 7;
-            y += Math.sin(angle) * 7;
+            x += Math.cos(angle) * (7 * scaleMultiplier);
+            y += Math.sin(angle) * (7 * scaleMultiplier);
 
 
             x = Math.max(
@@ -545,13 +531,91 @@ function drawRivers(
 
 
         ctx.lineWidth =
-            Math.max(1.5, resolution / 400);
+            Math.max(1.5 * scaleMultiplier, resolution / 400);
 
 
         ctx.stroke();
     }
 
     ctx.restore();
+}
+
+
+// ===============================
+// COPY SEED FUNCTIONALITY
+// ===============================
+
+function copySeed() {
+    if (!seedInput.value) return;
+
+    navigator.clipboard.writeText(seedInput.value).then(() => {
+        const originalText = copySeedBtn.textContent;
+        copySeedBtn.textContent = "Copied!";
+        setTimeout(() => {
+            copySeedBtn.textContent = originalText;
+        }, 1500);
+    }).catch(() => {
+        seedInput.select();
+        document.execCommand("copy");
+    });
+}
+
+
+// ===============================
+// DOWNLOAD MAP (DOWNSCALED FROM MASTER 4K MAP)
+// ===============================
+
+function downloadMap() {
+    const currentSeed = seedInput.value || "map";
+    const selectedMultiplier = Number(exportQualitySelect.value) || 1;
+    const MAX_QUALITY_MULTIPLIER = 4;
+
+    // If 4x (4K Ultra HD) selected, export directly from current master canvas
+    if (selectedMultiplier === MAX_QUALITY_MULTIPLIER) {
+        canvas.toBlob((blob) => {
+            if (!blob) return;
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.download = `${currentSeed}.png`;
+            link.href = url;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }, "image/png");
+        return;
+    }
+
+    // Downscale 4K master canvas to lower setting (1x, 2x, 3x)
+    const targetResolution = Math.round(canvas.width * (selectedMultiplier / MAX_QUALITY_MULTIPLIER));
+
+    const exportCanvas = document.createElement("canvas");
+    exportCanvas.width = targetResolution;
+    exportCanvas.height = targetResolution;
+
+    const exportCtx = exportCanvas.getContext("2d");
+    exportCtx.imageSmoothingEnabled = true;
+    exportCtx.imageSmoothingQuality = "high";
+
+    exportCtx.drawImage(canvas, 0, 0, targetResolution, targetResolution);
+
+    exportCanvas.toBlob((blob) => {
+        if (!blob) return;
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.download = `${currentSeed}.png`;
+        link.href = url;
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, "image/png");
 }
 
 
@@ -577,7 +641,7 @@ function updateTheme() {
 
 generateBtn.addEventListener(
     "click",
-    generateMap
+    () => generateMap(true)
 );
 
 themeSelect.addEventListener(
@@ -587,7 +651,22 @@ themeSelect.addEventListener(
 
 mapSizeSelect.addEventListener(
     "change",
-    generateMap
+    () => generateMap(false)
+);
+
+seedInput.addEventListener(
+    "change",
+    () => generateMap(false)
+);
+
+copySeedBtn.addEventListener(
+    "click",
+    copySeed
+);
+
+downloadBtn.addEventListener(
+    "click",
+    downloadMap
 );
 
 
@@ -596,3 +675,4 @@ mapSizeSelect.addEventListener(
 // ===============================
 
 updateTheme();
+        
