@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Random Map Generator</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Random Map Generator</h1>
+        <p>Create a random 2D game map</p>
+    </header>
+
+    <main>
+
+        <section class="controls">
+
+            <div class="control-group">
+                <label for="mapSize">Map Size</label>
+
+                <select id="mapSize">
+                    <option value="10">10 × 10</option>
+                    <option value="15" selected>15 × 15</option>
+                    <option value="20">20 × 20</option>
+                    <option value="25">25 × 25</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="themeSelect">Theme</label>
+
+                <select id="themeSelect">
+                    <option value="classic">Classic</option>
+                    <option value="forest">Forest</option>
+                    <option value="ocean">Ocean</option>
+                    <option value="desert">Desert</option>
+                    <option value="night">Night</option>
+                </select>
+            </div>
+
+            <button id="generateBtn">
+                Generate Map
+            </button>
+
+        </section>
+
+        <section class="map-section">
+
+            <h2>Your Map</h2>
+
+            <div class="map-container">
+                <canvas id="mapCanvas"></canvas>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Random Map Generator</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
