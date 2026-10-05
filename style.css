@@ -12,6 +12,9 @@
     --header: #1f2937;
     --button: #2563eb;
     --button-hover: #1d4ed8;
+    --button-secondary: #059669;
+    --button-secondary-hover: #047857;
+    --border: #ccc;
 }
 
 body {
@@ -30,6 +33,8 @@ body.theme-forest {
     --header: #245c2a;
     --button: #2e7d32;
     --button-hover: #1b5e20;
+    --button-secondary: #16a34a;
+    --button-secondary-hover: #15803d;
 }
 
 body.theme-ocean {
@@ -40,6 +45,8 @@ body.theme-ocean {
     --header: #075985;
     --button: #0284c7;
     --button-hover: #0369a1;
+    --button-secondary: #0d9488;
+    --button-secondary-hover: #0f766e;
 }
 
 body.theme-desert {
@@ -50,6 +57,8 @@ body.theme-desert {
     --header: #9a5b24;
     --button: #d97706;
     --button-hover: #b45309;
+    --button-secondary: #ca8a04;
+    --button-secondary-hover: #a16207;
 }
 
 body.theme-night {
@@ -60,6 +69,9 @@ body.theme-night {
     --header: #030712;
     --button: #7c3aed;
     --button-hover: #6d28d9;
+    --button-secondary: #2563eb;
+    --button-secondary-hover: #1d4ed8;
+    --border: #374151;
 }
 
 header {
@@ -89,7 +101,7 @@ main {
     padding: 20px;
     border-radius: 12px;
     display: flex;
-    align-items: end;
+    align-items: flex-end;
     justify-content: center;
     gap: 15px;
     flex-wrap: wrap;
@@ -107,16 +119,44 @@ main {
 }
 
 select,
+input[type="number"],
 button {
     padding: 11px 15px;
     border-radius: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border);
     font-size: 15px;
 }
 
-select {
+select,
+input[type="number"] {
     background: var(--surface);
     color: var(--text);
+}
+
+.seed-wrapper {
+    display: flex;
+    gap: 5px;
+}
+
+.seed-wrapper input {
+    width: 120px;
+}
+
+.seed-wrapper button {
+    padding: 11px 12px;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.seed-wrapper button:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transform: none;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
 }
 
 button {
@@ -126,6 +166,14 @@ button {
     cursor: pointer;
     font-weight: bold;
     transition: 0.2s ease;
+}
+
+button.btn-secondary {
+    background: var(--button-secondary);
+}
+
+button.btn-secondary:hover {
+    background: var(--button-secondary-hover);
 }
 
 button:hover {
@@ -179,8 +227,14 @@ footer {
     }
 
     .control-group,
+    .button-group,
     select,
+    input[type="number"],
     button {
+        width: 100%;
+    }
+
+    .seed-wrapper input {
         width: 100%;
     }
 
