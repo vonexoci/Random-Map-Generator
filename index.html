@@ -3,26 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Random Map Generator</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
-    <header>
+    <div class="container">
         <h1>Random Map Generator</h1>
-        <p>Create a random 2D game map</p>
-    </header>
 
-    <main>
-
-        <section class="controls">
-
+        <!-- Controls Section -->
+        <div class="controls-card">
             <div class="control-group">
                 <label for="mapSize">Map Size</label>
-
                 <select id="mapSize">
                     <option value="10">10 × 10</option>
                     <option value="15" selected>15 × 15</option>
@@ -33,7 +24,6 @@
 
             <div class="control-group">
                 <label for="themeSelect">Theme</label>
-
                 <select id="themeSelect">
                     <option value="classic">Classic</option>
                     <option value="forest">Forest</option>
@@ -45,7 +35,6 @@
 
             <div class="control-group">
                 <label for="exportQuality">Export Quality</label>
-
                 <select id="exportQuality">
                     <option value="1">1x (Standard)</option>
                     <option value="2" selected>2x (HD)</option>
@@ -56,40 +45,28 @@
 
             <div class="control-group">
                 <label for="seedInput">Seed</label>
-                <div class="seed-wrapper">
-                    <input type="number" id="seedInput" placeholder="Auto-generated">
-                    <button id="copySeedBtn" type="button" title="Copy Seed">Copy</button>
+                <div class="seed-container">
+                    <input type="text" id="seedInput" placeholder="Enter seed...">
+                    <button id="copySeedBtn" class="btn btn-secondary">Copy</button>
                 </div>
             </div>
 
             <div class="button-group">
-                <button id="generateBtn">
-                    Generate Map
-                </button>
-                <button id="downloadBtn" class="btn-secondary">
-                    Download Map
-                </button>
+                <button id="generateBtn" class="btn btn-primary">Generate Map</button>
+                <button id="downloadBtn" class="btn btn-primary">Download Map</button>
             </div>
+        </div>
 
-        </section>
-
-        <section class="map-section">
-
+        <!-- Canvas Output Section -->
+        <div class="map-card">
             <h2>Your Map</h2>
-
-            <div class="map-container">
+            <div class="canvas-wrapper">
                 <canvas id="mapCanvas"></canvas>
             </div>
-
-        </section>
-
-    </main>
-
-    <footer>
-        <p>Random Map Generator</p>
-    </footer>
+        </div>
+    </div>
 
     <script src="script.js"></script>
-
 </body>
-</html>
+    </html>
+    
