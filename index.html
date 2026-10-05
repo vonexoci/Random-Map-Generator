@@ -43,9 +43,33 @@
                 </select>
             </div>
 
-            <button id="generateBtn">
-                Generate Map
-            </button>
+            <div class="control-group">
+                <label for="exportQuality">Export Quality</label>
+
+                <select id="exportQuality">
+                    <option value="1">1x (Standard)</option>
+                    <option value="2" selected>2x (HD)</option>
+                    <option value="3">3x (Full HD)</option>
+                    <option value="4">4x (Ultra HD / 4K)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="seedInput">Seed</label>
+                <div class="seed-wrapper">
+                    <input type="number" id="seedInput" placeholder="Auto-generated">
+                    <button id="copySeedBtn" type="button" title="Copy Seed">Copy</button>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button id="generateBtn">
+                    Generate Map
+                </button>
+                <button id="downloadBtn" class="btn-secondary">
+                    Download Map
+                </button>
+            </div>
 
         </section>
 
